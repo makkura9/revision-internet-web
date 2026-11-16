@@ -1,0 +1,65 @@
+/* Requête Express — synthèse imprimable (A4, noir et blanc, sans fonds de couleur) */
+@page { size: A4; margin: 11mm 12mm 10mm; }
+
+html, body { background: #fff !important; color: #111 !important; min-height: 0 !important; }
+body::before, #bg, #app, .modal, .burst, .confetti, noscript { display: none !important; }
+#print-sheet { display: block !important; }
+
+.ps { font: 400 9.4pt/1.4 "Lexend", Arial, sans-serif; color: #111; }
+.ps h1, .ps h2, .ps h3, .ps p, .ps dl, .ps dd { margin: 0; }
+
+.ps-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8mm; padding-bottom: 4mm; border-bottom: 1.1mm solid #111; }
+.ps-k { font: 500 7.4pt/1.3 "DM Mono", monospace; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1.5mm !important; }
+.ps h1 { font: 800 27pt/1 "Bricolage Grotesque", Arial, sans-serif; font-stretch: 80%; text-transform: uppercase; letter-spacing: -.01em; }
+.ps-sub { font-size: 10.5pt; margin: 1mm 0 3.5mm !important; }
+.ps-meta > div { display: flex; align-items: baseline; gap: 3mm; padding: .7mm 0; }
+.ps-meta dt { flex: none; width: 19mm; font: 500 7.2pt/1.3 "DM Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.ps-meta dd { font-weight: 600; font-size: 10pt; }
+.ps-blank { display: inline-block; width: 55mm; height: 4mm; border-bottom: .3mm solid #111; }
+.ps-qr { flex: none; width: 40mm; text-align: center; font-size: 7.2pt; line-height: 1.3; }
+.ps-qr .qr { width: 31mm; height: 31mm; margin: 0 auto 1mm; display: block; }
+.ps-url { font: 500 7pt/1.3 "DM Mono", monospace; overflow-wrap: anywhere; margin-top: .5mm !important; }
+
+.ps h2 {
+  display: flex; align-items: center; gap: 3mm; margin: 5mm 0 2mm;
+  font: 800 12pt/1.1 "Bricolage Grotesque", Arial, sans-serif; text-transform: uppercase; letter-spacing: .03em;
+}
+.ps h2::after { content: ""; flex: 1; border-top: .3mm dashed #111; }
+
+.ps table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+.ps th { text-align: left; padding: 1mm 2mm; border-bottom: .4mm solid #111; font: 500 7pt/1.3 "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.ps td { padding: 1.2mm 2mm; border-bottom: .2mm solid #999; vertical-align: middle; }
+.ps td:first-child, .ps th:first-child { width: 8mm; text-align: center; }
+.ps-st { font-family: "Segoe UI Symbol", "Apple Symbols", "DejaVu Sans", sans-serif; font-size: 11.5pt; letter-spacing: .12em; white-space: nowrap; }
+.ps-todo { font: 500 7.5pt "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; color: #555; }
+
+.ps-rv p { line-height: 1; }
+.ps-rv span { display: inline-block; border: .4mm solid #111; border-radius: 99px; padding: 1mm 3mm; margin: 0 1.5mm 1.5mm 0; font-weight: 600; font-size: 9pt; line-height: 1.2; }
+.ps-rv .ps-none { line-height: 1.4; }
+
+/* Le schéma du trajet (page 1) */
+.ps-trajet { display: block; width: 100%; height: auto; margin-top: 3mm; --ink: #111; --a: #fff; --b: #fff; }
+.pt-line { fill: none; stroke: #111; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pt-dash { stroke-dasharray: 1 7; stroke-width: 2.6; }
+.pt-head { fill: #111; }
+.pt-bg { fill: #fff; }
+.ps-trajet text { text-anchor: middle; fill: #111; font-family: "Lexend", Arial, sans-serif; }
+.ps-trajet .pt-lab { font: 500 10.5px "DM Mono", monospace; letter-spacing: .04em; text-transform: uppercase; }
+.ps-trajet .pt-name { font: 800 15px "Bricolage Grotesque", Arial, sans-serif; }
+.ps-trajet .pt-desc { font-size: 11px; }
+
+/* Le mémo occupe le verso */
+.ps-memo { break-before: page; page-break-before: always; }
+.ps-memo h2 { margin-top: 0; }
+.ps-cols { columns: 2; column-gap: 7mm; }
+.ps-g { break-inside: avoid; page-break-inside: avoid; margin-bottom: 3mm; }
+.ps-g h3 { font: 800 10.6pt/1.2 "Bricolage Grotesque", Arial, sans-serif; padding-bottom: .7mm; margin-bottom: 1.2mm; border-bottom: .3mm solid #111; }
+.ps-g p { font-size: 8.7pt; line-height: 1.37; margin-bottom: 1.4mm; }
+.ps-g p > b:first-child { font-weight: 700; }
+.ps-g p > b:first-child::after { content: " :"; }
+.ps-g p.rv { border-left: 1mm solid #111; padding-left: 2mm; }
+.ps-tag { font: 500 6.6pt/1.2 "DM Mono", monospace; letter-spacing: .06em; text-transform: uppercase; border: .3mm solid #111; border-radius: 99px; padding: .2mm 1.6mm; margin-left: 1mm; white-space: nowrap; vertical-align: .3mm; }
+
+.ps-lines i { display: block; height: 8.5mm; border-bottom: .25mm solid #888; }
+
+.ps-foot { display: flex; justify-content: space-between; gap: 6mm; margin-top: 4mm; padding-top: 1.5mm; border-top: .3mm solid #111; font: 500 7pt/1.3 "DM Mono", monospace; }
