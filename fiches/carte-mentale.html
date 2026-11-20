@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carte mentale à compléter · Internet et Web</title>
+  <meta name="description" content="Carte mentale à trous de la séquence « Internet et Web » (Requête Express) : une feuille A4 paysage à compléter de mémoire.">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="preload" href="../assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/lexend.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    /* ==========================================================================
+       Requête Express — carte mentale à compléter (A4 paysage)
+       Variantes (paramètre d'adresse) :
+         carte-mentale.html               fiche élève, en couleur
+         carte-mentale.html?nb            fiche élève, noir et blanc (photocopie)
+         carte-mentale.html?corrige       corrigé en couleur
+         carte-mentale.html?nb&corrige    corrigé noir et blanc
+       ========================================================================== */
+    @font-face { font-family: "Bricolage Grotesque"; src: url(../assets/fonts/bricolage-grotesque.woff2) format("woff2"); font-weight: 200 800; font-stretch: 75% 100%; font-display: block; }
+    @font-face { font-family: "Lexend"; src: url(../assets/fonts/lexend.woff2) format("woff2"); font-weight: 100 900; font-display: block; }
+    @font-face { font-family: "DM Mono"; src: url(../assets/fonts/dm-mono-500.woff2) format("woff2"); font-weight: 500; font-display: block; }
+
+    @page { size: A4 landscape; margin: 0; }
+
+    :root {
+      --ink: #14132B;
+      --night: #12112A;
+      --soft: #5A5B78;
+      --express: #FF5A36;
+      --gold: #FFD23F;
+      --ok: #2CCB83;
+      --f-display: "Bricolage Grotesque", "Arial Narrow", sans-serif;
+      --f-body: "Lexend", Arial, sans-serif;
+      --f-mono: "DM Mono", Consolas, monospace;
+      /* Couleurs de mission : c = couleur, d = foncée (traits, cases), t = teinte (fond) */
+      --c: #FF5A36; --d: #B8371B; --t: #FFE9E3;
+    }
+    .m1 { --c: #6C9BFF; --d: #2B5CD6; --t: #E6EEFF; }
+    .m2 { --c: #2ED3A6; --d: #0B8463; --t: #DCF7EF; }
+    .m3 { --c: #FFA940; --d: #B05E00; --t: #FFEDD6; }
+    .m4 { --c: #B197FF; --d: #6847D4; --t: #EEE8FF; }
+    .m5 { --c: #FF85B0; --d: #C2306A; --t: #FFE6EF; }
+    .m6 { --c: #45D4F5; --d: #08799A; --t: #DDF6FD; }
+    .m7 { --c: #FFD23F; --d: #8F6B00; --t: #FFF5D1; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: #E3E4F0; }
+    body {
+      margin: 0; color: var(--ink); font-family: var(--f-body); font-size: 8pt; line-height: 1.25;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    h1, h2, h3, p, ol, dl, dd { margin: 0; padding: 0; }
+
+    /* ---------- Barre d'outils (écran seulement) ---------- */
+    .toolbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 10px;
+      max-width: 297mm; margin: 0 auto; padding: 14px 12px 0; font: 500 13px/1.3 var(--f-body);
+    }
+    .toolbar p { margin-right: auto; font: 800 17px/1.1 var(--f-display); }
+    .toolbar a, .toolbar button {
+      display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 99px;
+      border: 2px solid var(--ink); background: #fff; color: var(--ink); font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+    }
+    .toolbar a[aria-current="page"] { background: var(--ink); color: #fff; }
+    .toolbar button { background: var(--express); }
+
+    /* ---------- La page A4 ---------- */
+    .page {
+      position: relative; width: 297mm; height: 210mm; margin: 12px auto 28px; overflow: hidden;
+      background: #fff; box-shadow: 0 6px 24px rgba(20, 19, 43, .18);
+    }
+    @media print {
+      html, body { background: #fff; }
+      .toolbar { display: none; }
+      .page { margin: 0; box-shadow: none; }
+    }
+    .links { position: absolute; left: 0; top: 0; width: 297mm; height: 210mm; z-index: 2; pointer-events: none; overflow: visible; }
+
+    /* Icônes (mêmes dessins que le site) */
+    .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+    .i-sk { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .i-sk4 { stroke-width: 4.5; }
+    .i-a { fill: var(--a, #fff); }
+    .i-b { fill: var(--b, var(--c)); }
+    .i-d { fill: var(--ink); }
+    .i-w { fill: #fff; }
+    .i-bip-body { fill: var(--express); }
+    .i-bip-dot { fill: var(--gold); }
+    .i-star { fill: var(--star, #fff); stroke: var(--ink); stroke-width: 3.2; stroke-linejoin: round; }
+    .ico { display: block; }
+
+    /* ---------- En-tête ---------- */
+    .title { position: absolute; text-align: center; }
+    .brand {
+      display: inline-flex; flex-direction: column; align-items: flex-start;
+      font: 800 9pt/.9 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: -.01em;
+    }
+    .brand span:last-child {
+      background: var(--express); padding: .3mm 1.2mm .5mm; border-radius: .9mm; margin-top: .5mm;
+      transform: rotate(-3deg); box-shadow: .5mm .5mm 0 var(--gold);
+    }
+    .kicker { font: 500 6.2pt/1.3 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+    .title .head { display: flex; align-items: center; justify-content: center; gap: 3mm; }
+    .title h1 { font: 800 21pt/.95 var(--f-display); font-stretch: 80%; letter-spacing: -.01em; margin: 1.6mm 0 .8mm; }
+    .title .sub { font-size: 8.4pt; }
+    .fields { display: flex; gap: 4mm; margin-top: 2mm; text-align: left; }
+    .fields div { flex: 1; display: flex; align-items: flex-end; gap: 1.8mm; }
+    .fields div:first-child { flex: 1.5; }
+    .fields dt { font: 500 6.2pt/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); padding-bottom: .5mm; }
+    .fields dd { flex: 1; height: 6.5mm; border-bottom: .35mm solid var(--ink); }
+    .tampon { display: none; }
+    .corrige .fields { display: none; }
+    .corrige .tampon {
+      display: inline-block; margin-top: 1.2mm; padding: .5mm 4mm .8mm; border: .6mm solid var(--express); border-radius: 1.6mm;
+      font: 800 13pt/1 var(--f-display); font-stretch: 80%; letter-spacing: .08em; text-transform: uppercase; color: var(--express); transform: rotate(-3deg);
+    }
+    .nb.corrige .tampon { border-color: var(--ink); color: var(--ink); }
+
+    /* ---------- Mode d'emploi ---------- */
+    .method {
+      position: absolute; background: #fff; border: .4mm solid var(--ink); border-radius: 3.6mm;
+      padding: 2.2mm 3.2mm 2.6mm; box-shadow: 0 1.1mm 0 var(--ink);
+    }
+    .lc-row {
+      display: flex; justify-content: space-between; gap: 3mm; padding-bottom: 1.6mm; margin-bottom: 1.8mm;
+      border-bottom: .35mm dashed #C4C5DA; font: 500 6.2pt/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft);
+    }
+    .method ol { list-style: none; display: grid; gap: 1.5mm; }
+    .method li { display: flex; align-items: flex-start; gap: 2mm; font-size: 7.6pt; line-height: 1.32; }
+    .method li b.n {
+      flex: none; width: 4.6mm; height: 4.6mm; border-radius: 50%; display: grid; place-items: center;
+      font: 800 8pt/1 var(--f-display); border: .3mm solid var(--ink); margin-top: -.3mm;
+    }
+    .n1 { background: var(--express); } .n2 { background: var(--gold); } .n3 { background: var(--ok); }
+    .method li strong { font-weight: 700; }
+    .method .q { white-space: nowrap; font-weight: 600; }
+
+    /* ---------- Le centre de la carte ---------- */
+    .core {
+      position: absolute; z-index: 3; background: var(--night); color: #fff; border-radius: 5mm;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      box-shadow: 0 1.2mm 0 rgba(20, 19, 43, .35);
+    }
+    .core .k { font: 500 5.8pt/1 var(--f-mono); letter-spacing: .16em; text-transform: uppercase; color: #A9ABCF; margin-bottom: 1.6mm; }
+    .core .w1 { font: 800 25pt/.86 var(--f-display); font-stretch: 78%; text-transform: uppercase; letter-spacing: -.01em; }
+    .core .w2 {
+      display: inline-block; margin-top: 1.3mm; padding: .5mm 2.2mm .9mm; border-radius: 1.4mm;
+      font: 800 19pt/.95 var(--f-display); font-stretch: 78%; text-transform: uppercase; color: var(--ink);
+      background: var(--express); transform: rotate(-3deg); box-shadow: .8mm .8mm 0 var(--gold);
+    }
+    .core .bip { position: absolute; width: 11mm; height: 11mm; right: 5mm; top: -7mm; }
+
+    /* ---------- Les 7 branches ---------- */
+    .card { position: absolute; background: var(--t); border-radius: 3.6mm; padding: 1.8mm 3mm 2.4mm; }
+    .hd { display: flex; align-items: center; gap: 2.2mm; min-height: 9.8mm; }
+    .left .hd { padding-right: 9mm; }
+    .right .hd { padding-left: 9mm; }
+    .hd .tt { flex: 1; min-width: 0; }
+    .hk { font: 500 5.6pt/1.25 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+    .ht { font: 800 13.2pt/1 var(--f-display); font-stretch: 84%; margin-top: .4mm; }
+    .stars { display: flex; gap: .7mm; }
+    .stars .ico { width: 4.3mm; height: 4.3mm; }
+    .ic {
+      position: absolute; z-index: 4; top: 1.2mm; width: 12.5mm; height: 12.5mm; border-radius: 50%;
+      background: var(--c); border: .45mm solid var(--ink); box-shadow: 0 .8mm 0 var(--ink);
+      display: grid; place-items: center; --a: #fff; --b: #fff;
+    }
+    .left .ic { right: -6.25mm; }
+    .right .ic { left: -6.25mm; }
+    .bottom .ic { left: 50%; margin-left: -6.25mm; top: -6.25mm; }
+    .bottom .hd { padding-top: 5.6mm; text-align: center; }
+    .bottom .hd > .stars { position: absolute; right: 3mm; top: 2.4mm; }
+    .ic .ico { width: 7.8mm; height: 7.8mm; }
+
+    .lf { margin-top: 1.4mm; }
+    .lb {
+      display: inline-block; font: 800 8.2pt/1 var(--f-display); font-stretch: 90%; white-space: nowrap;
+      background: var(--c); border: .3mm solid var(--ink); border-radius: 1.5mm; padding: .65mm 1.7mm .85mm;
+    }
+    .lf > .lb { margin-bottom: .8mm; }
+    .row { display: block; line-height: 7mm; min-height: 7mm; }
+    .row > * { vertical-align: middle; line-height: 1.2; }
+    .row .b { margin: 0 .35mm; }
+    .row + .row { margin-top: .2mm; }
+    .sm { font-size: 6.8pt; line-height: 1.2; color: var(--soft); }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 3mm; }
+
+    /* Une case à compléter */
+    .b {
+      position: relative; display: inline-block; flex: none; vertical-align: middle;
+      width: var(--w, 20mm); height: 6.4mm; background: #fff;
+      border: .32mm dashed var(--d); border-radius: 1.4mm;
+    }
+    .b > i {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 .8mm;
+      font: 600 7.6pt/1 var(--f-body); font-style: normal; color: var(--d); white-space: nowrap; visibility: hidden;
+    }
+    .corrige .b > i { visibility: visible; }
+    /* Sigle : la lettre est donnée, le mot est à écrire */
+    .tl { display: inline-flex; flex: none; vertical-align: middle; }
+    .tl > b {
+      width: 5.2mm; height: 6.4mm; display: grid; place-items: center; background: var(--c);
+      border: .32mm solid var(--ink); border-radius: 1.4mm 0 0 1.4mm; font: 800 10pt/1 var(--f-display);
+    }
+    .tl > .b { border-radius: 0 1.4mm 1.4mm 0; border-left: 0; }
+    .tlist { display: grid; gap: .6mm; }
+
+    /* Mission 1 : la recette d'un réseau */
+    .recipe { display: flex; align-items: flex-end; gap: 1.2mm; }
+    .ing { display: flex; flex-direction: column; gap: .7mm; }
+    .ing .sm { white-space: nowrap; }
+    .plus { font: 800 12pt/1 var(--f-display); padding-bottom: 1mm; }
+    .ex { display: inline-flex; align-items: center; gap: 1.5mm; }
+
+    /* Mission 5 : le schéma client / serveur */
+    .cs { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 0 2mm; }
+    .cs-end { display: flex; flex-direction: column; align-items: center; gap: .8mm; }
+    .cs-end .ico { width: 9mm; height: 9mm; --a: #fff; --b: var(--c); }
+    .cs-mid { display: grid; gap: 1.2mm; padding-bottom: 1mm; }
+    .arrow { display: flex; align-items: center; gap: 1.2mm; }
+    .arrow::before {
+      content: ""; flex: 1; height: 3mm;
+      background: linear-gradient(var(--ink), var(--ink)) center / 100% .45mm no-repeat;
+    }
+    .arrow.to::after, .arrow.back::after {
+      content: ""; position: relative; width: 0; height: 0; border-top: 1.4mm solid transparent; border-bottom: 1.4mm solid transparent;
+    }
+    .arrow.to::after { order: 3; border-left: 2.4mm solid var(--ink); margin-left: -1.4mm; }
+    .arrow.back::after { order: -1; border-right: 2.4mm solid var(--ink); margin-right: -1.4mm; }
+    .arrow .lab { order: 2; }
+
+    /* Mission 7 : les 3 critères */
+    .lbrow { display: flex; align-items: center; justify-content: space-between; gap: 2mm; margin-bottom: 1.2mm; }
+    .serp {
+      display: inline-flex; align-items: center; gap: 1.2mm; padding: .6mm 2.6mm .6mm 1.2mm; border-radius: 99px;
+      background: #fff; border: .3mm solid var(--ink); font: 500 6.4pt/1.2 var(--f-mono); color: var(--soft); white-space: nowrap;
+    }
+    .serp .ico { width: 3.6mm; height: 3.6mm; --b: var(--c); }
+    .crit .tl { margin-right: 1mm; }
+
+    /* Mon bilan */
+    .key { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 1mm 2mm; font-size: 7.4pt; margin-bottom: .6mm; }
+    .key > span { display: inline-flex; align-items: center; gap: 1.2mm; }
+    .key .stars .ico { width: 3.5mm; height: 3.5mm; }
+    .on3 .ico, .on2 .ico:nth-child(-n+2), .on1 .ico:first-child { --star: var(--gold); }
+    .todo { display: flex; align-items: flex-end; gap: 2mm; height: 7mm; }
+    .todo span { font-weight: 700; font-size: 7.4pt; white-space: nowrap; padding-bottom: .5mm; }
+    .todo i { flex: 1; align-self: stretch; border-bottom: .3mm solid #9B9CB5; }
+
+    /* Mission 4 : Internet ≠ Web */
+    .vs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: 0 2mm; }
+    .vs > div { display: flex; flex-direction: column; align-items: flex-start; gap: .9mm; }
+    /* « ≠ » dessiné (absent des polices du site) */
+    .ne { position: relative; display: inline-block; }
+    .ne::after {
+      content: ""; position: absolute; left: 50%; top: 18%; bottom: 14%; width: .1em; margin-left: -.05em;
+      background: currentColor; border-radius: .05em; transform: rotate(32deg);
+    }
+    .neq { align-self: center; font: 800 22pt/1 var(--f-display); color: var(--d); }
+    .svc { display: flex; gap: 1.4mm; }
+
+    /* Variante noir et blanc : fonds blancs, traits noirs, peu d'encre */
+    .nb .m1, .nb .m2, .nb .m3, .nb .m4, .nb .m5, .nb .m6, .nb .m7 { --c: #fff; --d: #333; --t: #fff; }
+    .nb .card { box-shadow: inset 0 0 0 .35mm var(--ink); }
+    .nb { --express: #fff; --gold: #fff; --ok: #fff; }
+    .nb .core { background: #fff; color: var(--ink); border: .6mm solid var(--ink); box-shadow: 0 1.2mm 0 var(--ink); }
+    .nb .core .k { color: var(--soft); }
+    .nb .core .w2, .nb .brand span:last-child { border: .35mm solid var(--ink); box-shadow: .8mm .8mm 0 var(--ink); }
+    .nb .brand span:last-child { box-shadow: .5mm .5mm 0 var(--ink); }
+    .nb .tl > b { background: #EDEDED; }
+    .nb .lb { background: #fff; }
+    .nb .branch { fill: #fff; }
+    .nb .on3 .ico, .nb .on2 .ico:nth-child(-n+2), .nb .on1 .ico:first-child { --star: #A3A3A3; }
+  </style>
+</head>
+<body>
+  <nav class="toolbar" aria-label="Versions de la fiche">
+    <p>Carte mentale à compléter</p>
+    <a href="carte-mentale.html" data-v="">Élève · couleur</a>
+    <a href="carte-mentale.html?nb" data-v="nb">Élève · noir et blanc</a>
+    <a href="carte-mentale.html?corrige" data-v="corrige">Corrigé</a>
+    <a href="carte-mentale.html?nb&amp;corrige" data-v="nbcorrige">Corrigé · noir et blanc</a>
+    <button type="button" onclick="window.print()">Imprimer</button>
+  </nav>
+
+  <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="i-laptop" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="9" y="8" width="30" height="22" rx="3"/>
+      <rect class="i-b" x="13" y="12" width="22" height="14" rx="1.5"/>
+      <path class="i-sk i-a" d="M4 34h40l-3 6H7z"/>
+    </symbol>
+    <symbol id="i-house" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M9 21v21h30V21"/>
+      <path class="i-sk i-b" d="M4 24L24 6l20 18z"/>
+      <rect class="i-sk i-b" x="20" y="31" width="8" height="11"/>
+    </symbol>
+    <symbol id="i-box" viewBox="0 0 48 48">
+      <path class="i-sk" d="M13 25V9M35 25V9"/>
+      <rect class="i-sk i-a" x="4" y="25" width="40" height="15" rx="5"/>
+      <circle class="i-b" cx="12" cy="32.5" r="2.2"/><circle class="i-b" cx="19" cy="32.5" r="2.2"/>
+      <path class="i-sk" d="M28 32.5h9M11 40v3M37 40v3"/>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 48 48">
+      <circle class="i-sk i-b" cx="24" cy="24" r="19"/>
+      <ellipse class="i-sk" cx="24" cy="24" rx="8.5" ry="19"/>
+      <path class="i-sk" d="M5 24h38M8.5 14h31M8.5 34h31"/>
+    </symbol>
+    <symbol id="i-server" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="8" y="4" width="32" height="12" rx="3"/>
+      <rect class="i-sk i-a" x="8" y="18" width="32" height="12" rx="3"/>
+      <rect class="i-sk i-a" x="8" y="32" width="32" height="12" rx="3"/>
+      <circle class="i-b" cx="14.5" cy="10" r="2.2"/><path class="i-sk" d="M26 10h8"/>
+      <circle class="i-b" cx="14.5" cy="24" r="2.2"/><path class="i-sk" d="M26 24h8"/>
+      <circle class="i-b" cx="14.5" cy="38" r="2.2"/><path class="i-sk" d="M26 38h8"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M10 4h19l10 10v30H10z"/>
+      <path class="i-sk i-b" d="M29 4v10h10z"/>
+      <path class="i-sk" d="M21 23l-4.5 5.5L21 34M28 23l4.5 5.5L28 34"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 48 48">
+      <circle class="i-sk i-b" cx="20" cy="20" r="13"/>
+      <path class="i-sk i-sk4" d="M30.5 30.5L43 43"/>
+      <path class="i-sk" d="M13 20a7 7 0 0 1 7-7"/>
+    </symbol>
+    <symbol id="i-bip" viewBox="0 0 48 48">
+      <path class="i-sk" d="M24 10V5"/>
+      <circle class="i-sk i-bip-dot" cx="24" cy="4.5" r="2.6"/>
+      <rect class="i-sk i-bip-body" x="6" y="10" width="36" height="32" rx="11"/>
+      <ellipse class="i-d" cx="17.5" cy="24" rx="3.2" ry="4.2"/>
+      <ellipse class="i-d" cx="30.5" cy="24" rx="3.2" ry="4.2"/>
+      <circle class="i-w" cx="18.6" cy="22.4" r="1.2"/><circle class="i-w" cx="31.6" cy="22.4" r="1.2"/>
+      <path class="i-sk" d="M19.5 32.5q4.5 3.8 9 0"/>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 48 48">
+      <path class="i-star" d="M24 3.5l6.3 12.8 14.1 2-10.2 10 2.4 14L24 35.7l-12.6 6.6 2.4-14-10.2-10 14.1-2z"/>
+    </symbol>
+  </svg>
+
+  <main class="page" id="page">
+    <svg class="links" id="links" viewBox="0 0 297 210" aria-hidden="true"></svg>
+
+    <!-- ============ EN-TÊTE ============ -->
+    <header class="title" style="left:114.5mm; top:7mm; width:68mm">
+      <div class="head">
+        <div class="brand" aria-label="Requête Express"><span>Requête</span><span>Express</span></div>
+        <p class="kicker">Informatique 1C · Révision</p>
+      </div>
+      <h1>Ma carte mentale</h1>
+      <p class="sub">Tout ce que tu as retenu, sur une seule page.</p>
+      <dl class="fields">
+        <div><dt>Prénom</dt><dd></dd></div>
+        <div><dt>Date</dt><dd></dd></div>
+      </dl>
+      <p class="tampon">Corrigé</p>
+    </header>
+
+    <section class="method" style="left:114.5mm; top:38.6mm; width:68mm">
+      <div class="lc-row"><span>Mode d’emploi</span><span>3 étapes</span></div>
+      <ol>
+        <li><b class="n n1">1</b><p><strong>De mémoire.</strong> Complète les cases sans regarder le cours. Un trou&nbsp;? Passe, et reviens-y à la fin.</p></li>
+        <li><b class="n n2">2</b><p><strong>Vérifie</strong> sur le site&nbsp;: <span class="q">« Bilan &amp; synthèse »</span>, puis <span class="q">« Relire tout le mémo »</span>.</p></li>
+        <li><b class="n n3">3</b><p><strong>Corrige en vert.</strong> Tout ce qui est en vert, c’est ce qu’il te reste à réviser.</p></li>
+      </ol>
+    </section>
+
+    <!-- ============ CENTRE ============ -->
+    <div class="core" id="core" style="left:108mm; top:88mm; width:81mm; height:28mm">
+      <p class="k">La séquence</p>
+      <p class="w1">Internet</p>
+      <p class="w2">&amp; Web</p>
+      <svg class="ico bip" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-bip"/></svg>
+    </div>
+
+    <!-- ============ 1 · LE RÉSEAU ============ -->
+    <section class="card m1 left" id="z1" style="left:7mm; top:7mm; width:95mm" data-from="0.035,0" data-out="0,-1">
+      <div class="hd">
+        <div class="tt"><p class="hk">Mission 1 · Départ : ton appareil</p><h2 class="ht">Le réseau</h2></div>
+        <span class="stars" aria-label="Mon auto-évaluation"></span>
+        <span class="ic"><svg class="ico" viewBox="0 0 48 48"><use href="#i-laptop"/></svg></span>
+      </div>
+      <div class="lf">
+        <span class="lb">Les 3 ingrédients d’un réseau</span>
+        <div class="recipe">
+          <div class="ing"><span class="sm">plusieurs …</span><span class="b" style="--w:25mm"><i>terminaux</i></span></div>
+          <span class="plus">+</span>
+          <div class="ing"><span class="sm">une … physique</span><span class="b" style="--w:25mm"><i>connexion</i></span></div>
+          <span class="plus">+</span>
+          <div class="ing"><span class="sm">des … de communication</span><span class="b" style="--w:28mm"><i>protocoles</i></span></div>
+        </div>
+      </div>
+      <div class="lf">
+        <span class="lb">2 façons de relier les appareils</span>
+        <div class="row">
+          <div class="ex"><span class="b" style="--w:21mm"><i>filaire</i></span><span class="sm">ex.&nbsp;: câble réseau,<br>fibre optique</span></div>
+          <div class="ex" style="margin-left:4mm"><span class="b" style="--w:21mm"><i>sans fil</i></span><span class="sm">ex.&nbsp;: Wi-Fi,<br>4G/5G</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2 · LAN, WAN & INTERNET ============ -->
+    <section class="card m2 left" id="z2" style="left:7mm; top:57mm; width:95mm" data-from="0,0.22" data-out="-1,0">
+      <div class="hd">
+        <div class="tt"><p class="hk">Mission 2 · Sortie de la maison</p><h2 class="ht">LAN, WAN &amp; Internet</h2></div>
+        <span class="stars"></span>
+        <span class="ic"><svg class="ico" viewBox="0 0 48 48"><use href="#i-house"/></svg></span>
+      </div>
+      <div class="two">
+        <div class="lf">
+          <span class="lb">LAN</span>
+          <div class="tlist">
+            <span class="tl"><b>L</b><span class="b" style="--w:24mm"><i>Local</i></span></span>
+            <span class="tl"><b>A</b><span class="b" style="--w:24mm"><i>Area</i></span></span>
+            <span class="tl"><b>N</b><span class="b" style="--w:24mm"><i>Network</i></span></span>
+          </div>
+          <div class="row">= réseau <span class="b" style="--w:21mm"><i>local</i></span></div>
+          <div class="row">ex.&nbsp;: <span class="b" style="--w:33mm"><i>maison, bureau…</i></span></div>
+        </div>
+        <div class="lf">
+          <span class="lb">WAN</span>
+          <div class="tlist">
+            <span class="tl"><b>W</b><span class="b" style="--w:24mm"><i>Wide</i></span></span>
+            <span class="tl"><b>A</b><span class="b" style="--w:24mm"><i>Area</i></span></span>
+            <span class="tl"><b>N</b><span class="b" style="--w:24mm"><i>Network</i></span></span>
+          </div>
+          <div class="row">= réseau <span class="b" style="--w:21mm"><i>étendu</i></span></div>
+          <div class="row">géré par les <span class="b" style="--w:24mm"><i>opérateurs</i></span></div>
+        </div>
+      </div>
+      <div class="lf row">
+        <span class="lb">Internet</span> un WAN <span class="b" style="--w:16mm"><i>public</i></span>, le « réseau de <span class="b" style="--w:18mm"><i>réseaux</i></span> »
+      </div>
+    </section>
+
+    <!-- ============ 3 · LA BOX & L'ACCÈS ============ -->
+    <section class="card m3 left" id="z3" style="left:7mm; top:125.7mm; width:95mm" data-from="0,0.82" data-out="-1,0">
+      <div class="hd">
+        <div class="tt"><p class="hk">Mission 3 · Passage obligé</p><h2 class="ht">La box &amp; l’accès</h2></div>
+        <span class="stars"></span>
+        <span class="ic"><svg class="ico" viewBox="0 0 48 48"><use href="#i-box"/></svg></span>
+      </div>
+      <div class="lf">
+        <span class="lb">FAI</span> <span class="sm">(en anglais&nbsp;: ISP)</span>
+        <div class="row">
+          <span class="tl"><b>F</b><span class="b" style="--w:26mm"><i>Fournisseur</i></span></span>
+          <span class="tl"><b>A</b><span class="b" style="--w:19mm"><i>d’accès</i></span></span>
+          <span class="tl"><b>I</b><span class="b" style="--w:23mm"><i>à Internet</i></span></span>
+        </div>
+      </div>
+      <div class="lf">
+        <span class="lb">La box = 3 appareils en 1</span>
+        <div class="row"><span class="b" style="--w:39mm"><i>modem-routeur</i></span> relie la box à Internet (via le WAN)</div>
+        <div class="row"><span class="b" style="--w:39mm"><i>switch (commutateur)</i></span> relie les appareils par câble</div>
+        <div class="row"><span class="b" style="--w:39mm"><i>point d’accès Wi-Fi</i></span> relie les appareils par ondes</div>
+      </div>
+      <div class="lf">
+        <span class="lb">Wi-Fi ou 4G/5G ?</span>
+        <div class="two">
+          <div><p>En Wi-Fi, d’abord relié au…</p><div class="row"><span class="b" style="--w:38mm"><i>réseau local (box)</i></span></div></div>
+          <div><p>En 4G/5G, relié directement à…</p><div class="row"><span class="b" style="--w:38mm"><i>l’opérateur</i></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4 · INTERNET ≠ WEB ============ -->
+    <section class="card m4 bottom" id="z4" style="left:108mm; top:128.6mm; width:81mm" data-from="0.5,1" data-out="0,1" data-in="0,1">
+      <div class="hd">
+        <span class="ic"><svg class="ico" viewBox="0 0 48 48"><use href="#i-globe"/></svg></span>
+        <div class="tt"><p class="hk">Mission 4 · Sur le grand réseau</p><h2 class="ht">Internet <span class="ne" role="img" aria-label="différent du">=</span> Web</h2></div>
+        <span class="stars"></span>
+      </div>
+      <div class="lf vs">
+        <div><span class="lb">Internet</span><span class="sm">le réseau</span><span class="b" style="--w:30mm"><i>informatique</i></span><span class="sm">qui transporte les données</span></div>
+        <span class="neq"><span class="ne" role="img" aria-label="différent du">=</span></span>
+        <div><span class="lb">Web</span><span class="sm">un réseau d’</span><span class="b" style="--w:30mm"><i>informations</i></span><span class="sm">des milliards de documents reliés</span></div>
+      </div>
+      <div class="lf">
+        <span class="lb">4 services d’Internet</span>
+        <div class="svc row">
+          <span class="b" style="--w:17.4mm"><i>e-mail</i></span> <span class="b" style="--w:17.4mm"><i>FTP</i></span> <span class="b" style="--w:17.4mm"><i>streaming</i></span> <span class="b" style="--w:17.4mm"><i>Web</i></span>
+        </div>
+      </div>
+      <div class="lf row"><span class="lb">Des liens entre les textes</span> c’est l’<span class="b" style="--w:25mm"><i>hypertexte</i></span></div>
+      <div class="lf row"><span class="lb">Le bon mot</span> « site <span class="b" style="--w:15mm"><i>Web</i></span> » <span class="sm">et non « site Internet »</span></div>
+    </section>
+
+    <!-- ============ 5 · CLIENT, SERVEUR & HTTP ============ -->
+    <section class="card m5 right" id="z5" style="left:195mm; top:104.2mm; width:95mm" data-from="1,0.86" data-out="1,0">
+      <div class="hd">
+        <span class="ic"><svg class="ico" viewBox="0 0 48 48"><use href="#i-server"/></svg></span>
+        <div class="tt"><p class="hk">Mission 5 · Destination : le serveur</p><h2 class="ht">Client, serveur &amp; HTTP</h2></div>
+        <span class="stars"></span>
+      </div>
+      <div class="lf cs">
+        <div class="cs-end"><svg class="ico" viewBox="0 0 48 48"><use href="#i-laptop"/></svg><span class="b" style="--w:22mm"><i>client</i></span></div>
+        <div class="cs-mid">
+          <div class="arrow to"><span class="lab b" style="--w:24mm"><i>requête (HTTP)</i></span></div>
+          <div class="arrow back"><span class="lab b" style="--w:24mm"><i>réponse</i></span></div>
+        </div>
+        <div class="cs-end"><svg class="ico" viewBox="0 0 48 48"><use href="#i-server"/></svg><span class="b" style="--w:22mm"><i>serveur</i></span></div>
+      </div>
+      <div class="lf row"><span class="lb">HTTP</span> le <span class="b" style="--w:24mm"><i>protocole</i></span> du client et du serveur Web</div>
+      <div class="lf row"><span class="lb">Serveur Web</span> il <span class="b" style="--w:18mm"><i>stocke</i></span> et <span class="b" style="--w:18mm"><i>fournit</i></span> les documents</div>
+      <div class="lf row"><span class="lb">Clients Web</span> ex.&nbsp;: <span class="b" style="--w:19.5mm"><i>Chrome</i></span> <span class="b" style="--w:19.5mm"><i>Safari</i></span> <span class="b" style="--w:19.5mm"><i>Firefox</i></span></div>
+    </section>
+
+    <!-- ============ 6 · URL, HTML & CSS ============ -->
+    <section class="card m6 right" id="z6" style="left:195mm; top:55mm; width:95mm" data-from="1,0.14" data-out="1,0">
+      <div class="hd">
+        <span class="ic"><svg class="ico" viewBox="0 0 48 48"><use href="#i-doc"/></svg></span>
+        <div class="tt"><p class="hk">Mission 6 · Le colis du retour</p><h2 class="ht">URL, HTML &amp; CSS</h2></div>
+        <span class="stars"></span>
+      </div>
+      <div class="lf row"><span class="lb">URL</span> une <span class="b" style="--w:21mm"><i>adresse</i></span> qui mène à une page Web</div>
+      <div class="lf row"><span class="lb">HTML</span> décrit la <span class="b" style="--w:22mm"><i>structure</i></span> et le <span class="b" style="--w:20mm"><i>contenu</i></span></div>
+      <div class="lf row"><span class="lb">CSS</span> sert à <span class="b" style="--w:30mm"><i>mettre en forme</i></span> le code HTML</div>
+      <div class="lf row"><span class="lb">Qui les affiche ?</span> le <span class="b" style="--w:25mm"><i>navigateur</i></span> interprète HTML et CSS</div>
+    </section>
+
+    <!-- ============ 7 · LE MOTEUR DE RECHERCHE ============ -->
+    <section class="card m7 right" id="z7" style="left:195mm; top:7mm; width:95mm" data-from="0.965,0" data-out="0,-1">
+      <div class="hd">
+        <span class="ic"><svg class="ico" viewBox="0 0 48 48"><use href="#i-search"/></svg></span>
+        <div class="tt"><p class="hk">Mission 7 · Dernier arrêt</p><h2 class="ht">Le moteur de recherche</h2></div>
+        <span class="stars"></span>
+      </div>
+      <div class="lf">
+        <div class="lbrow"><span class="lb">Les 3 critères de classement</span><span class="serp"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-search"/></svg>que mange un pigeon</span></div>
+        <div class="crit">
+          <div class="row"><span class="tl"><b>P</b><span class="b" style="--w:22mm"><i>Pertinence</i></span></span> la page répond-elle à la <span class="b" style="--w:18mm"><i>requête</i></span>&nbsp;?</div>
+          <div class="row"><span class="tl"><b>P</b><span class="b" style="--w:22mm"><i>Popularité</i></span></span> le <span class="b" style="--w:18mm"><i>nombre</i></span> de liens vers la page</div>
+          <div class="row"><span class="tl"><b>C</b><span class="b" style="--w:22mm"><i>Confiance</i></span></span> la <span class="b" style="--w:18mm"><i>qualité</i></span> de ces liens</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MON BILAN ============ -->
+    <section class="method bilan" style="left:195mm; top:163.4mm; width:95mm">
+      <div class="lc-row"><span>Mon bilan · colorie tes étoiles</span><span>Après la correction</span></div>
+      <div class="key">
+        <span><span class="stars on3"></span>tout juste</span>
+        <span><span class="stars on2"></span>presque</span>
+        <span><span class="stars on1"></span>à revoir</span>
+      </div>
+      <div class="todo"><span>À revoir en priorité&nbsp;:</span><i></i></div>
+      <div class="todo"><i></i></div>
+      <div class="todo"><i></i></div>
+    </section>
+  </main>
+
+  <script>
+  (function () {
+    'use strict';
+    var q = location.search;
+    var root = document.documentElement;
+    if (/[?&]nb\b/.test(q)) root.classList.add('nb');
+    if (/[?&]corrige\b/.test(q)) root.classList.add('corrige');
+    var v = (root.classList.contains('nb') ? 'nb' : '') + (root.classList.contains('corrige') ? 'corrige' : '');
+    document.querySelectorAll('.toolbar a').forEach(function (a) {
+      if (a.getAttribute('data-v') === v) a.setAttribute('aria-current', 'page');
+    });
+    if (root.classList.contains('corrige')) document.title = 'Corrigé · ' + document.title;
+
+    /* Trois étoiles vides à colorier dans chaque branche */
+    var star = '<svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-star"/></svg>';
+    document.querySelectorAll('.key .stars').forEach(function (s) { s.innerHTML = star + star + star; });
+    document.querySelectorAll('.hd .stars').forEach(function (s) {
+      s.innerHTML = star + star + star;
+      s.setAttribute('role', 'img');
+      s.setAttribute('aria-label', 'Trois étoiles à colorier');
+    });
+
+    /* Les branches : du centre vers l'icône de chaque mission */
+    var NS = 'http://www.w3.org/2000/svg';
+    function draw() {
+      var page = document.getElementById('page');
+      var svg = document.getElementById('links');
+      var pr = page.getBoundingClientRect();
+      var k = 297 / pr.width; // px -> mm
+      function box(el) {
+        var r = el.getBoundingClientRect();
+        return { x: (r.left - pr.left) * k, y: (r.top - pr.top) * k, w: r.width * k, h: r.height * k };
+      }
+      var core = box(document.getElementById('core'));
+      svg.innerHTML = '';
+      document.querySelectorAll('.card').forEach(function (card) {
+        var f = card.getAttribute('data-from').split(',').map(Number);
+        var o = card.getAttribute('data-out').split(',').map(Number);
+        var ic = box(card.querySelector('.ic'));
+        var p0 = [core.x + f[0] * core.w - o[0] * 3, core.y + f[1] * core.h - o[1] * 3];
+        var p3 = [ic.x + ic.w / 2, ic.y + ic.h / 2];
+        var dir = card.classList.contains('left') ? -1 : 1;
+        var dx = Math.abs(p3[0] - p0[0]), dy = Math.abs(p3[1] - p0[1]);
+        var l0 = Math.max(9, (o[0] ? dx : dy) * 0.55), l1 = Math.max(9, dx * 0.6);
+        var p1 = [p0[0] + o[0] * l0, p0[1] + o[1] * l0];
+        var e = (card.getAttribute('data-in') || (dir + ',0')).split(',').map(Number);
+        var p2 = [p3[0] - e[0] * l1, p3[1] - e[1] * l1];
+        svg.appendChild(taper(p0, p1, p2, p3, 3.8, 1.5, getComputedStyle(card).getPropertyValue('--c')));
+      });
+    }
+    function bez(p0, p1, p2, p3, t) {
+      var u = 1 - t;
+      return [
+        u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0],
+        u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1]
+      ];
+    }
+    /** Branche effilée : un ruban qui s'affine du centre vers la mission. */
+    function taper(p0, p1, p2, p3, w0, w1, color) {
+      var n = 48, L = [], R = [];
+      for (var i = 0; i <= n; i++) {
+        var t = i / n, a = bez(p0, p1, p2, p3, Math.max(0, t - 0.002)), b = bez(p0, p1, p2, p3, Math.min(1, t + 0.002));
+        var tx = b[0] - a[0], ty = b[1] - a[1], len = Math.hypot(tx, ty) || 1;
+        var nx = -ty / len, ny = tx / len, w = (w0 + (w1 - w0) * t) / 2, p = bez(p0, p1, p2, p3, t);
+        L.push([p[0] + nx * w, p[1] + ny * w]);
+        R.push([p[0] - nx * w, p[1] - ny * w]);
+      }
+      var d = 'M' + L.map(function (p) { return p[0].toFixed(2) + ' ' + p[1].toFixed(2); }).join('L') +
+        'L' + R.reverse().map(function (p) { return p[0].toFixed(2) + ' ' + p[1].toFixed(2); }).join('L') + 'Z';
+      var path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('class', 'branch');
+      path.setAttribute('fill', color.trim());
+      path.setAttribute('stroke', '#14132B');
+      path.setAttribute('stroke-width', '0.32');
+      path.setAttribute('stroke-linejoin', 'round');
+      return path;
+    }
+
+    function ready() { draw(); document.documentElement.setAttribute('data-ready', '1'); }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(ready); else window.addEventListener('load', ready);
+    window.addEventListener('resize', draw);
+    window.addEventListener('beforeprint', draw);
+  })();
+  </script>
+</body>
+</html>

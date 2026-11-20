@@ -49,6 +49,57 @@ l'adresse à laquelle il est consulté. L'adresse écrite dans `js/data.js`
   service externe. La progression est enregistrée dans le navigateur de l'élève
   (`localStorage`) et ne quitte pas son appareil.
 
+## Carte mentale à compléter (fiche papier)
+
+Pour les élèves qui terminent les missions avant la fin de la période : une
+feuille **A4 paysage** à remplir **de mémoire**, avec la même charte graphique
+que le site. Chaque mission est une branche (même couleur, même icône), avec
+54 cases à compléter. Les cases en pointillés sont dimensionnées pour une
+écriture à la main.
+
+| Fichier | Usage |
+|---|---|
+| `fiches/carte-mentale.pdf` | fiche élève, en couleur |
+| `fiches/carte-mentale-nb.pdf` | fiche élève, noir et blanc : peu d'encre, pour la photocopieuse (les élèves peuvent colorier les branches) |
+| `fiches/carte-mentale-corrige.pdf` | corrigé, à projeter ou à afficher |
+| `fiches/carte-mentale.html` | la source des PDF, imprimable depuis le navigateur |
+
+**Imprimer** : le PDF en orientation paysage, à 100 % (« taille réelle »).
+La fiche garde 7 mm de marge, ce qui suffit à la plupart des imprimantes ; si
+la vôtre rogne les bords, choisir « Ajuster à la page ».
+
+**En classe**, la fiche propose trois étapes, inspirées de la pratique du
+rappel (*retrieval practice*) :
+
+1. **De mémoire** : l'élève complète les cases sans regarder le cours.
+2. **Vérifie** : sur le site, dans « Bilan & synthèse », puis « Relire tout le
+   mémo ». Toutes les réponses figurent dans ce mémo.
+3. **Corrige en vert** : ce qui est ajouté en vert montre ce qu'il reste à
+   réviser. L'élève colorie ensuite les 3 étoiles de chaque mission et note
+   dans « Mon bilan » les notions à revoir en priorité.
+
+Aucune réponse n'est imprimée ailleurs sur la fiche élève (les titres et les
+consignes ne trahissent pas les cases). Le corrigé donne une réponse par case.
+Réponses également acceptées :
+
+- *Mission 2* : tout exemple de réseau local (maison, appartement, bureau,
+  bâtiment, salle d'informatique).
+- *Mission 3* : « switch » ou « commutateur » ; « réseau local » ou « LAN » ;
+  « l'opérateur » ou « ses antennes ».
+- *Mission 4* : les 4 services dans n'importe quel ordre (« courrier
+  électronique » pour e-mail, « échange de fichiers » pour FTP).
+- *Mission 5* : « navigateur » ou « client Web » sous l'ordinateur ;
+  « requête » avec ou sans « HTTP » ; tout navigateur réel (Edge, Opera…),
+  mais pas Google, qui est un moteur de recherche.
+
+**Modifier la fiche** : le texte se trouve dans `fiches/carte-mentale.html`.
+Une case s'écrit `<span class="b" style="--w:24mm"><i>réponse</i></span>` :
+`--w` est la largeur de la case, `<i>` la réponse affichée dans le corrigé.
+Les branches se redessinent seules. Pour refaire les PDF, ouvrir la page dans
+Chrome ou Edge, choisir la version dans la barre du haut, puis « Imprimer » →
+« Enregistrer au format PDF », avec **Marges : aucune** et **Graphiques
+d'arrière-plan** cochés.
+
 ## Modifier le contenu
 
 Tout le texte pédagogique se trouve dans **`js/data.js`** :
@@ -99,6 +150,7 @@ js/fx.js            fond animé, étincelles, confettis
 js/scenes.js        illustrations animées des missions
 js/activities.js    les mini-jeux
 js/app.js           écrans : accueil, carte, mission, bilan, synthèse
+fiches/             carte mentale à compléter (HTML source + 3 PDF)
 assets/fonts/       polices (hébergées avec le site)
 vendor/qrcode.js    générateur de QR code
 ```
