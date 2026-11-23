@@ -1,0 +1,69 @@
+/* Paquet Express — fiche imprimable (A4 recto verso, lisible en noir et blanc) */
+@page { size: A4; margin: 10mm 11mm 9mm; }
+
+html, body { background: #fff !important; color: #111 !important; min-height: 0 !important; }
+body::before, #bg, #app, .modal, .burst, .confetti, noscript { display: none !important; }
+#print-sheet { display: block !important; }
+
+.ps { font: 400 9.2pt/1.38 "Lexend", Arial, sans-serif; color: #111; }
+.ps h1, .ps h2, .ps h3, .ps p, .ps dl, .ps dd { margin: 0; }
+
+.ps-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8mm; padding-bottom: 3mm; border-bottom: 1.1mm solid #111; }
+.ps-k { font: 500 7.3pt/1.3 "DM Mono", monospace; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1.2mm !important; }
+.ps h1 { font: 800 30pt/1 "Bricolage Grotesque", Arial, sans-serif; font-stretch: 80%; text-transform: uppercase; letter-spacing: -.01em; }
+.ps-sub { font-size: 10pt; margin: 1mm 0 3mm !important; }
+.ps-meta > div { display: flex; align-items: baseline; gap: 3mm; padding: .6mm 0; }
+.ps-meta dt { flex: none; width: 19mm; font: 500 7.1pt/1.3 "DM Mono", monospace; letter-spacing: .1em; text-transform: uppercase; }
+.ps-meta dd { font-weight: 600; font-size: 9.6pt; }
+.ps-blank { display: inline-block; width: 55mm; height: 4mm; border-bottom: .3mm solid #111; }
+.ps-qr { flex: none; width: 36mm; text-align: center; font-size: 7pt; line-height: 1.3; }
+.ps-qr .qr { width: 27mm; height: 27mm; margin: 0 auto 1mm; display: block; }
+.ps-url { font: 500 6.8pt/1.3 "DM Mono", monospace; overflow-wrap: anywhere; margin-top: .5mm !important; }
+
+.ps h2 {
+  display: flex; align-items: center; gap: 3mm; margin: 4mm 0 2mm;
+  font: 800 11.5pt/1.1 "Bricolage Grotesque", Arial, sans-serif; text-transform: uppercase; letter-spacing: .03em;
+}
+.ps h2::after { content: ""; flex: 1; border-top: .3mm dashed #111; }
+
+/* La carte : couleurs très claires, traits noirs (lisible même en noir et blanc) */
+.ps-map .scene-map { box-shadow: none; border: .3mm solid #111; border-radius: 3mm; background: #fff; padding: 1mm 1mm 0; }
+.ps-map .scene { box-shadow: none; }
+.ps-map .map-legend { padding: 1mm 2mm 1.5mm; font-size: 7pt; }
+.ps-map .mz-bg { stroke: #111 !important; stroke-width: 1.5; }
+.ps-map .mp-route { display: none; }
+.ps-cap { font-size: 8pt; margin-top: 1.2mm !important; }
+.ps-cap b { font-family: "DM Mono", monospace; font-weight: 500; }
+
+.ps-two { display: grid; grid-template-columns: 1.05fr 1fr; gap: 6mm; align-items: start; }
+.ps-ly { width: 100%; border-collapse: collapse; font-size: 8.3pt; }
+.ps-ly th { text-align: left; padding: .8mm 1.5mm; border-bottom: .4mm solid #111; font: 500 6.8pt/1.3 "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.ps-ly td { padding: 1.2mm 1.5mm; border-bottom: .2mm solid #999; vertical-align: top; }
+.ps-ly td:first-child { white-space: nowrap; }
+.pk-print .pk-l { border-radius: 2.2mm; padding: 1mm; gap: 1mm; border-width: .45mm; }
+.pk-print .pk-h { padding: .6mm 1mm .3mm; }
+.pk-print .pk-n { font-size: 8.6pt; }
+.pk-print .pk-n i { font-size: 6pt; }
+.pk-print .pk-f b { font-size: 7.4pt; }
+.pk-print .pk-f em { font-size: 6pt; }
+
+/* Le mémo occupe le verso */
+.ps-memo { break-before: page; page-break-before: always; }
+.ps-memo h2 { margin-top: 0; }
+.ps-cols { columns: 2; column-gap: 7mm; }
+.ps-g { break-inside: avoid; page-break-inside: avoid; margin-bottom: 2.6mm; }
+.ps-g h3 { font: 800 10.4pt/1.2 "Bricolage Grotesque", Arial, sans-serif; padding-bottom: .7mm; margin-bottom: 1.2mm; border-bottom: .3mm solid #111; }
+.ps-g p { font-size: 8.6pt; line-height: 1.36; margin-bottom: 1.3mm; }
+.ps-g p > b:first-child { font-weight: 700; }
+.ps-g p > b:first-child::after { content: " :"; }
+.ps-g p.rv { border-left: 1mm solid #111; padding-left: 2mm; }
+.ps-tag { font: 500 6.4pt/1.2 "DM Mono", monospace; letter-spacing: .06em; text-transform: uppercase; border: .3mm solid #111; border-radius: 99px; padding: .2mm 1.6mm; margin-left: 1mm; white-space: nowrap; vertical-align: .3mm; }
+
+.ps table:not(.ps-ly) { width: 100%; border-collapse: collapse; font-size: 8.6pt; }
+.ps-res th { text-align: left; padding: .9mm 2mm; border-bottom: .4mm solid #111; font: 500 6.8pt/1.3 "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+.ps-res td { padding: 1mm 2mm; border-bottom: .2mm solid #999; vertical-align: middle; }
+.ps-res td:first-child, .ps-res th:first-child { width: 8mm; text-align: center; }
+.ps-st { font-family: "Segoe UI Symbol", "Apple Symbols", "DejaVu Sans", sans-serif; font-size: 11pt; letter-spacing: .12em; white-space: nowrap; }
+.ps-todo { font: 500 7.3pt "DM Mono", monospace; letter-spacing: .08em; text-transform: uppercase; color: #555; }
+
+.ps-foot { display: flex; justify-content: space-between; gap: 6mm; margin-top: 4mm; padding-top: 1.5mm; border-top: .3mm solid #111; font: 500 7pt/1.3 "DM Mono", monospace; }

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Paquet Express · Cours TCP/IP</title>
+  <meta name="description" content="Cours interactif sur TCP/IP : adresses IP, DNS, paquets, routage, TCP, ports, modèle en couches et encapsulation. On suit le voyage d’un paquet, du gymnase jusqu’au serveur Web.">
+  <meta name="theme-color" content="#12112A">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/lexend.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <!-- Bibliothèque d'icônes (réutilisées partout avec <use>) -->
+  <svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <!-- Appareils -->
+    <symbol id="i-phone" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="13" y="4" width="22" height="40" rx="5"/>
+      <rect class="i-b" x="17" y="10" width="14" height="23" rx="2"/>
+      <path class="i-sk" d="M21.5 38.5h5"/>
+    </symbol>
+    <symbol id="i-laptop" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="9" y="8" width="30" height="22" rx="3"/>
+      <rect class="i-b" x="13" y="12" width="22" height="14" rx="1.5"/>
+      <path class="i-sk i-a" d="M4 34h40l-3 6H7z"/>
+    </symbol>
+    <symbol id="i-server" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="8" y="4" width="32" height="12" rx="3"/>
+      <rect class="i-sk i-a" x="8" y="18" width="32" height="12" rx="3"/>
+      <rect class="i-sk i-a" x="8" y="32" width="32" height="12" rx="3"/>
+      <circle class="i-b i-led" cx="14.5" cy="10" r="2.2"/><path class="i-sk" d="M26 10h8"/>
+      <circle class="i-b i-led" cx="14.5" cy="24" r="2.2"/><path class="i-sk" d="M26 24h8"/>
+      <circle class="i-b i-led" cx="14.5" cy="38" r="2.2"/><path class="i-sk" d="M26 38h8"/>
+    </symbol>
+    <symbol id="i-router" viewBox="0 0 48 48">
+      <circle class="i-sk i-a" cx="24" cy="24" r="19.5"/>
+      <path class="i-sk" d="M27.5 20.5l7-7m-6 0h6v6M20.5 27.5l-7 7m6 0h-6v-6"/>
+      <path class="i-sk i-b-st" d="M13.5 13.5l7 7m0-6v6h-6M34.5 34.5l-7-7m0 6v-6h6"/>
+    </symbol>
+    <symbol id="i-switch" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="4" y="11" width="40" height="26" rx="6"/>
+      <path class="i-sk" d="M11 19.5h22m-5-5 5 5-5 5"/>
+      <path class="i-sk i-b-st" d="M37 28.5H15m5-5-5 5 5 5"/>
+    </symbol>
+    <symbol id="i-ap" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="7" y="30" width="34" height="11" rx="5"/>
+      <circle class="i-b" cx="14.5" cy="35.5" r="2.2"/><path class="i-sk" d="M22 35.5h12"/>
+      <path class="i-sk" d="M24 30v-7"/>
+      <circle class="i-sk i-b" cx="24" cy="20" r="3"/>
+      <path class="i-sk" d="M17 13.5a10 10 0 0 1 14 0M12 8.5a17 17 0 0 1 24 0"/>
+    </symbol>
+    <symbol id="i-book" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M5 10.5c6.500-2.200 12.500-1.200 19 3v27c-6.500-4.200-12.500-5.200-19-3z"/>
+      <path class="i-sk i-b" d="M43 10.5c-6.500-2.200-12.500-1.200-19 3v27c6.500-4.200 12.500-5.200 19-3z"/>
+      <path class="i-sk" d="M10 18.500c3-.6 6-.3 9 1M10 25c3-.6 6-.3 9 1M29 19.500c3-1.300 6-1.600 9-1M29 26c3-1.300 6-1.600 9-1"/>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 48 48">
+      <circle class="i-sk i-b" cx="24" cy="24" r="19"/>
+      <ellipse class="i-sk" cx="24" cy="24" rx="8.500" ry="19"/>
+      <path class="i-sk" d="M5 24h38M8.500 14h31M8.500 34h31"/>
+    </symbol>
+    <symbol id="i-house" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M9 21v21h30V21"/>
+      <path class="i-sk i-b" d="M4 24L24 6l20 18z"/>
+      <rect class="i-sk i-b" x="20" y="31" width="8" height="11"/>
+    </symbol>
+    <symbol id="i-browser" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="4" y="7" width="40" height="34" rx="4"/>
+      <path class="i-sk" d="M4 16h40"/>
+      <circle class="i-d" cx="9.500" cy="11.500" r="1.500"/><circle class="i-d" cx="14.500" cy="11.500" r="1.500"/>
+      <rect class="i-b" x="9" y="21" width="30" height="6" rx="2"/>
+      <path class="i-sk" d="M9 32h19M9 36.500h12"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M10 4h19l10 10v30H10z"/>
+      <path class="i-sk i-b" d="M29 4v10h10z"/>
+      <path class="i-sk" d="M21 23l-4.500 5.500L21 34M28 23l4.500 5.500L28 34"/>
+    </symbol>
+    <symbol id="i-mail" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="5" y="10" width="38" height="28" rx="4"/>
+      <path class="i-sk" d="M6.500 13L24 27l17.500-14"/>
+    </symbol>
+    <symbol id="i-flag" viewBox="0 0 48 48">
+      <path class="i-sk i-b" d="M13 8h25l-6 8 6 8H13z"/>
+      <path class="i-sk i-sk4" d="M13 44V6"/>
+    </symbol>
+    <!-- Icônes des parties du cours -->
+    <symbol id="i-carte" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M5 11l12-5 14 5 12-5v31l-12 5-14-5-12 5z"/>
+      <path class="i-sk" d="M17 6v31M31 11v31"/>
+      <path class="i-sk i-b" d="M24 31s6-5.500 6-10a6 6 0 0 0-12 0c0 4.500 6 10 6 10z"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 48 48">
+      <path class="i-sk i-b" d="M24 44s14-12.500 14-24a14 14 0 0 0-28 0c0 11.500 14 24 14 24z"/>
+      <circle class="i-sk i-a" cx="24" cy="20" r="5.500"/>
+    </symbol>
+    <symbol id="i-parcel" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M6 15l18-9 18 9v19l-18 9-18-9z"/>
+      <path class="i-sk" d="M6 15l18 9 18-9M24 24v19"/>
+      <path class="i-sk i-b" d="M14.500 10.700l18 9v7l-4.500-2.200v-7l-18-9z"/>
+    </symbol>
+    <symbol id="i-nest" viewBox="0 0 48 48">
+      <rect class="i-sk i-a" x="4" y="7" width="40" height="34" rx="6"/>
+      <rect class="i-sk i-b" x="10" y="13" width="28" height="22" rx="4.500"/>
+      <rect class="i-sk i-a" x="16" y="19" width="16" height="10" rx="2.500"/>
+    </symbol>
+    <symbol id="i-megaphone" viewBox="0 0 48 48">
+      <path class="i-sk i-a" d="M5 19.500v9h6l15 9.500v-28l-15 9.500z"/>
+      <path class="i-sk i-a" d="M11 28.500l3 10h5.500l-2.500-10"/>
+      <path class="i-sk" d="M32 18a8.500 8.500 0 0 1 0 12M37 13a15 15 0 0 1 0 22"/>
+    </symbol>
+    <symbol id="i-bulb" viewBox="0 0 48 48">
+      <path class="i-sk i-b" d="M24 4.500a13 13 0 0 0-8 23.300c2 1.700 3 3.900 3 6.700h10c0-2.800 1-5 3-6.700a13 13 0 0 0-8-23.300z"/>
+      <path class="i-sk" d="M19 39.500h10M21 44h6"/>
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 48 48">
+      <circle class="i-sk i-a" cx="22" cy="26" r="17"/>
+      <circle class="i-sk i-b" cx="22" cy="26" r="9.500"/>
+      <circle class="i-d" cx="22" cy="26" r="3.200"/>
+      <path class="i-sk" d="M22 26L39.500 8.500M33 8h7v7"/>
+    </symbol>
+    <symbol id="i-bip" viewBox="0 0 48 48">
+      <path class="i-sk" d="M24 10V5"/>
+      <circle class="i-sk i-bip-dot" cx="24" cy="4.500" r="2.600"/>
+      <rect class="i-sk i-bip-body" x="6" y="10" width="36" height="32" rx="11"/>
+      <ellipse class="i-d" cx="17.500" cy="24" rx="3.200" ry="4.200"/>
+      <ellipse class="i-d" cx="30.500" cy="24" rx="3.200" ry="4.200"/>
+      <circle class="i-w" cx="18.600" cy="22.400" r="1.200"/><circle class="i-w" cx="31.600" cy="22.400" r="1.200"/>
+      <path class="i-sk" d="M19.500 32.500q4.500 3.800 9 0"/>
+    </symbol>
+    <!-- Icônes d'interface (couleur du texte) -->
+    <symbol id="i-star" viewBox="0 0 48 48">
+      <path class="i-fill" d="M24 3.500l6.300 12.800 14.100 2-10.200 10 2.400 14L24 35.700l-12.600 6.600 2.400-14-10.200-10 14.100-2z"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 48 48"><path class="i-ui" d="M9 25l10 10 20-22"/></symbol>
+    <symbol id="i-x" viewBox="0 0 48 48"><path class="i-ui" d="M12 12l24 24M36 12L12 36"/></symbol>
+    <symbol id="i-next" viewBox="0 0 48 48"><path class="i-ui" d="M8 24h32M27 11l13 13-13 13"/></symbol>
+    <symbol id="i-back" viewBox="0 0 48 48"><path class="i-ui" d="M40 24H8M21 11L8 24l13 13"/></symbol>
+    <symbol id="i-replay" viewBox="0 0 48 48"><path class="i-ui" d="M9 24a15 15 0 1 0 5-11.200M9 7v9h9"/></symbol>
+    <symbol id="i-print" viewBox="0 0 48 48"><path class="i-ui" d="M14 17V6h20v11M14 35H8a3 3 0 0 1-3-3V20a3 3 0 0 1 3-3h32a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-6M14 28h20v14H14z"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 48 48"><path class="i-ui" d="M6 6h14v14H6zM28 6h14v14H28zM6 28h14v14H6zM28 28h6v6h-6zM42 28v2M36 42h6v-6M28 40v2"/></symbol>
+    <symbol id="i-map" viewBox="0 0 48 48"><path class="i-ui" d="M5 11l12-5 14 5 12-5v31l-12 5-14-5-12 5zM17 6v31M31 11v31"/></symbol>
+    <symbol id="i-full" viewBox="0 0 48 48"><path class="i-ui" d="M6 17V6h11M31 6h11v11M42 31v11H31M17 42H6V31"/></symbol>
+    <symbol id="i-screen" viewBox="0 0 48 48"><path class="i-ui" d="M4 7h40M7 7v23h34V7M24 30v7M15 43l9-6 9 6"/></symbol>
+    <symbol id="i-memo" viewBox="0 0 48 48"><path class="i-ui" d="M10 5h21l8 8v30H10zM30 5v9h9M17 22h15M17 29h15M17 36h9"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 48 48"><path class="i-ui" d="M3 24s8-13 21-13 21 13 21 13-8 13-21 13S3 24 3 24z"/><circle class="i-ui" cx="24" cy="24" r="5.500"/></symbol>
+  </svg>
+
+  <main id="app" tabindex="-1"></main>
+  <div id="print-sheet" aria-hidden="true"></div>
+
+  <noscript><p class="noscript">Ce site a besoin de JavaScript pour fonctionner. Active-le dans ton navigateur, puis recharge la page.</p></noscript>
+
+  <script src="vendor/qrcode.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/activities.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
