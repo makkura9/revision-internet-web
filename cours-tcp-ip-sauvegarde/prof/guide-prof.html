@@ -15,6 +15,19 @@
   <p class="cover-sub">TCP/IP : le voyage d’un paquet sur Internet</p>
   <p class="cover-guide">Guide du professeur</p>
   <div class="cover-map" data-fig="map-mission"></div>
+  <p class="toc-k">Dans ce guide</p>
+  <div class="toc">
+    <p><span>·</span>Le cours en un coup d’œil, déroulé minuté</p>
+    <p><span style="--tc:#FFD23F">1</span>Le départ : rappel de la carte</p>
+    <p><span>·</span>La carte de référence et toutes les adresses</p>
+    <p><span style="--tc:#2ED3A6">2</span>L’adresse : adresse IP et DNS</p>
+    <p><span>·</span>Bilan, trace écrite et mémo du cours</p>
+    <p><span style="--tc:#45D4F5">3</span>Le voyage : paquets et routage</p>
+    <p><span>·</span>Précisions scientifiques</p>
+    <p><span style="--tc:#FFA940">4</span>La livraison : TCP et ports</p>
+    <p><span>·</span>Questions d’élèves, démonstrations, glossaire</p>
+    <p><span style="--tc:#B197FF">5</span>Emballe et envoie ! La mission finale</p>
+  </div>
   <div class="cover-foot">
     <div class="cover-qr" data-fig="qr"></div>
     <div>
@@ -134,8 +147,10 @@
       <tr><td>Serveur photos</td><td>Centre de données</td><td>Hébergeur</td><td class="mono">203.0.113.17</td><td>Héberge <span class="mono">photos.pigeon-voyageur.example</span> (distracteur).</td></tr>
     </tbody>
   </table>
+  <div class="boxes2">
   <div class="box warn"><p><b>Un scénario fictif, mais exact.</b> Le domaine <span class="mono">.example</span> est réservé aux exemples (RFC 2606) : ce site n’existe pas. Les adresses publiques viennent des blocs réservés à la documentation (RFC 5737), les adresses du LAN sont des adresses privées (RFC 1918) et les adresses MAC commençant par <span class="mono">02</span> sont « administrées localement » : aucune n’appartient à un vrai réseau, à un vrai serveur ou à un fabricant. Le réseau réel du gymnase est sans doute organisé autrement.</p></div>
   <div class="box"><p><b>« Internet » sur la carte.</b> Par commodité, la zone violette représente les réseaux des <i>autres</i> opérateurs, entre le FAI et l’hébergeur. En toute rigueur, Internet est l’ensemble de tous ces réseaux reliés entre eux, y compris ceux du FAI, du gymnase et de l’hébergeur : c’est ce que disent le mémo et le corrigé.</p></div>
+  </div>
 </section>
 
 <!-- ===================== PARTIES (générées + notes) ===================== -->
@@ -188,7 +203,7 @@
     <h4>Point prof · 3 min</h4>
     <ol>
       <li><b>« À ton avis ? »</b> — <i>« Une page de 2 Mo voyage-t-elle d’un seul bloc ? »</i> Réponse attendue : non, en morceaux.</li>
-      <li><b>« Tout est découpé en paquets »</b> : au plus 1500 octets environ par paquet, donc plus d’un millier de paquets pour 2 Mo (2 000 000 ÷ 1500 ≈ 1333). Pourquoi : les câbles sont partagés, et une perte ne coûte qu’un petit renvoi. IP colle sur chaque paquet l’en-tête IP : adresses de destination et source. <i>Évitez de dire que les paquets sont « numérotés » : ce sera le rôle de TCP (partie 4).</i></li>
+      <li><b>« Tout est découpé en paquets »</b> : au plus 1500 octets environ par paquet, donc plus d’un millier de paquets pour 2 Mo (2&#8239;000&#8239;000 ÷ 1500 ≈ 1333). Pourquoi : les câbles sont partagés, et une perte ne coûte qu’un petit renvoi. IP colle sur chaque paquet l’en-tête IP : adresses de destination et source. <i>Évitez de dire que les paquets sont « numérotés » : ce sera le rôle de TCP (partie 4).</i></li>
       <li><b>« Les routeurs, centres de tri »</b> : lisez la table du routeur A. Demandez : <i>« Un paquet pour 203.0.113.42 arrive au routeur A : où va-t-il ? »</i> (routeur B). Insistez : chaque routeur ne choisit que la prochaine étape.</li>
       <li><b>« Et si un routeur tombe en panne ? »</b> : le réseau est maillé, il existe d’autres chemins. Conséquences : désordre, pertes. IP ne garantit pas la livraison : transition vers TCP.</li>
     </ol>
@@ -258,14 +273,15 @@
         <li><b>Accès réseau</b> — Wi-Fi, câbles et fibre transportent les données d’un appareil à l’autre ; la trame est refaite à chaque routeur.</li>
       </ul>
       <p>Question de sortie possible : <i>« Citez les 4 couches et un protocole pour chacune. »</i></p>
-      <h3 class="g-h3">La fiche imprimable</h3>
-      <p>Dans « Bilan &amp; fiche », le bouton <b>Imprimer ma fiche TCP/IP</b> produit une feuille A4 recto verso : résultats, notions à revoir, carte complète, tableau des 4 couches, paquet encapsulé et mémo. Elle peut servir de <b>trace écrite</b> ; sans imprimante, les élèves l’enregistrent en PDF.</p>
     </div>
     <div>
-      <h3 class="g-h3">Le mémo du cours (texte officiel)</h3>
-      <div class="memo-all-g" data-memo></div>
+      <h3 class="g-h3">La fiche imprimable</h3>
+      <p>Dans « Bilan &amp; fiche », le bouton <b>Imprimer ma fiche TCP/IP</b> produit une feuille A4 recto verso : résultats, notions à revoir, carte complète, tableau des 4 couches, paquet encapsulé et mémo. Elle peut servir de <b>trace écrite</b> ; sans imprimante, les élèves l’enregistrent en PDF.</p>
+      <div class="box tip"><p><b>Et après ?</b> Les élèves peuvent rejouer les parties et relever les défis bonus à la maison : la progression reste enregistrée dans leur navigateur. Les notions « à revoir » de leur bilan indiquent quoi retravailler.</p></div>
     </div>
   </div>
+  <h3 class="g-h3">Le mémo du cours (le texte que lisent les élèves)</h3>
+  <div class="memo-all-g" data-memo></div>
 </section>
 
 <!-- ===================== PRÉCISIONS SCIENTIFIQUES ===================== -->
@@ -281,7 +297,7 @@
     <div class="sci"><h4>DNS</h4><p>Le serveur DNS du FAI est un <b>résolveur récursif</b> : s’il ne connaît pas la réponse, il interroge un serveur racine, puis le serveur du domaine de premier niveau, puis le serveur qui fait autorité pour le domaine. Les réponses sont gardées en cache pour une durée fixée par le domaine ; l’ordinateur et le navigateur ont aussi leur cache. Le DNS est un protocole de la couche Application ; il utilise surtout UDP, port 53 (et parfois TCP).</p></div>
     <div class="sci"><h4>HTTPS</h4><p>Avec HTTPS, une couche de chiffrement (TLS) s’intercale entre HTTP et TCP : les en-têtes IP et TCP restent lisibles par les routeurs, mais le message HTTP est chiffré. Port habituel : 443. HTTP/3 fonctionne sur QUIC, au-dessus d’UDP. Le site fictif utilise HTTP en clair (port 80) pour que le contenu du paquet reste lisible.</p></div>
     <div class="sci"><h4>Routage</h4><p>Les tables de routage sont remplies automatiquement par des protocoles de routage (par exemple OSPF dans le réseau d’un opérateur, BGP entre opérateurs). Leurs lignes désignent des blocs d’adresses (préfixes, comme 203.0.113.0/24, noté « 203.0.113.… » dans le cours). Chaque routeur retire 1 au TTL (64 au départ sous Linux et macOS, 128 sous Windows) ; à 0, il détruit le paquet et prévient l’expéditeur par un message ICMP, ce qu’utilise <span class="mono">traceroute</span>.</p></div>
-    <div class="sci"><h4>Ports</h4><p>Les numéros vont de 0 à 65 535 ; ceux de 0 à 1023 sont les ports « bien connus » (80, 443, 25, 53…). Le port source est choisi par le système dans une plage dite éphémère : 49 152–65 535 selon l’IANA (Windows, macOS), 32 768–60 999 sous Linux. 51234 appartient aux deux. Le port 25 sert au transfert du courrier entre serveurs ; les logiciels de messagerie envoient plutôt par les ports 587 ou 465.</p></div>
+    <div class="sci"><h4>Ports</h4><p>Les numéros vont de 0 à 65&#8239;535 ; ceux de 0 à 1023 sont les ports « bien connus » (80, 443, 25, 53…). Le port source est choisi par le système dans une plage dite éphémère : 49&#8239;152–65&#8239;535 selon l’IANA (Windows, macOS), 32&#8239;768–60&#8239;999 sous Linux. 51234 appartient aux deux. Le port 25 sert au transfert du courrier entre serveurs ; les logiciels de messagerie envoient plutôt par les ports 587 ou 465.</p></div>
     <div class="sci"><h4>IP et UDP</h4><p>IP offre un service « au mieux » (<i>best effort</i>) : ni garantie de livraison, ni ordre, ni absence de doublons. UDP, l’autre protocole de transport, ajoute seulement les ports et une somme de contrôle : rien n’est renvoyé, d’où son usage pour le direct (appels vidéo, jeux).</p></div>
     <div class="sci"><h4>4G/5G (défi bonus, partie 1)</h4><p>En données mobiles, le téléphone passe par le réseau de l’opérateur mobile (antenne, puis réseau de l’opérateur). Si cet opérateur n’est pas le FAI du gymnase, le trajet évite aussi le WAN du FAI du gymnase : c’est pourquoi cette réponse ne figure pas parmi les choix proposés.</p></div>
   </div>

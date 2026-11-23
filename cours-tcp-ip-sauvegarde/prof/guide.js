@@ -80,7 +80,8 @@
       case 'encaps': body = encapsHtml(); break;
       case 'journey': body = journeyHtml(); break;
     }
-    return '<div class="ex' + (bonus ? ' is-bonus' : '') + '">' + head + q + body + '</div>';
+    var long = st.type === 'encaps' || st.type === 'journey' || st.type === 'tcp' || st.type === 'dns';
+    return '<div class="ex' + (bonus ? ' is-bonus' : '') + (long ? ' long' : '') + '">' + head + q + body + '</div>';
   }
 
   /* ---------- Mission finale : construire le paquet ---------- */
@@ -94,10 +95,10 @@
       if (k < M.ordre.length - 1) {
         var rest = M.ordre.slice(k).map(function (x) { return M.entetes[x].nom; });
         out += '<li><b>Quelle enveloppe ajouter maintenant ?</b> Choix proposés : ' + rest.join(', ') + '. Réponse : <b>' + e.nom + '</b> (couche ' + e.couche + ') : on descend les couches dans l’ordre.</li>';
-      } else {
-        out += '<li class="note-li">(Il ne reste qu’une enveloppe, ' + e.nom + ', ajoutée sans question d’ordre.)</li>';
       }
+      var last = k === M.ordre.length - 1;
       out += '<li><b>' + e.nom + ' : ' + e.q.charAt(0).toLowerCase() + e.q.slice(1) + '</b>' +
+        (last ? ' <span class="muted">(il ne reste qu’une enveloppe : elle est ajoutée sans question d’ordre)</span>' : '') +
         (e.fixes ? ' <span class="muted">(déjà rempli : ' + e.fixes.map(function (f) { return f[0] + ' ' + f[1]; }).join(', ') + ')</span>' : '') +
         qcmHtml({ options: e.options, code: id !== 'acc' }) + '</li>';
     });
@@ -123,6 +124,15 @@
       '<p><b>Évolution de l’étiquette.</b> Trame : Wi-Fi (ordinateur → point d’accès), Ethernet (jusqu’au routeur du gymnase), « fibre optique » sur les liaisons entre routeurs, Ethernet jusqu’au serveur. Adresse source : <span class="mono">' + N.pc + '</span> puis <span class="mono">' + N.rgPub + '</span> après le routeur du gymnase. Destination : <span class="mono">' + N.web + '</span> pendant tout l’aller. Au retour : <span class="mono">' + N.web + ' → ' + N.rgPub + '</span>, puis <span class="mono">→ ' + N.pc + '</span> après le routeur du gymnase. Le retour passe par un autre chemin (D, C) que l’aller (A, B).</p>';
   }
 
+  /** Un titre de section ne doit jamais rester seul en bas de page :
+      on le place dans le même bloc insécable que le premier exercice. */
+  function keep(title, exHtml) {
+    var re = /<div class="ex( is-bonus)?( long)?">/g, m, cut = -1, n = 0;
+    while ((m = re.exec(exHtml))) { if (++n === 2) { cut = m.index; break; } }
+    var first = cut > 0 ? exHtml.slice(0, cut) : exHtml, rest = cut > 0 ? exHtml.slice(cut) : '';
+    return '<div class="keep">' + title + first + '</div>' + rest;
+  }
+
   /* ---------- Une partie complète ---------- */
   function partHtml(p, i) {
     var slides = p.slides.map(function (s, k) {
@@ -135,12 +145,17 @@
       '<h2>' + p.titre + '</h2><p class="pg-sub">' + p.sous + '</p></div>' +
       '<p class="pg-time"><b>' + p.duree + ' min</b><span>point prof ' + p.prof + ' min · élèves ' + (p.duree - p.prof - (i === 0 ? 1 : 0)) + ' min' + (i === 0 ? ' · accueil 1 min' : '') + '</span></p></header>' +
       '<div class="two pg-top"><div><h3 class="g-h3">Les cartes du point prof</h3><ol class="slides-l">' + slides + '</ol><div class="notes"></div></div>' +
-      '<div><h3 class="g-h3">À retenir (mémo de la partie)</h3><div class="memo-p">' + p.memo.map(function (k) { return '<p><b>' + NOT[k].t + '.</b> ' + NOT[k].d + '</p>'; }).join('') + '</div></div></div>' +
-      '<h3 class="g-h3 corr">Corrigé des exercices</h3>' + ex +
-      (bonus ? '<h3 class="g-h3 corr bonus">Défi bonus</h3>' + bonus : '') +
+      '<div><h3 class="g-h3">À retenir (mémo de la partie)</h3><div class="memo-p">' + p.memo.map(function (k) { return '<p><b>' + NOT[k].t + '.</b> ' + NOT[k].d + '</p>'; }).join('') + '</div><div class="notes-r"></div></div></div>' +
+      keep('<h3 class="g-h3 corr">Corrigé des exercices</h3>', ex) +
+      (bonus ? keep('<h3 class="g-h3 corr bonus">Défi bonus</h3>', bonus) : '') +
       '</section>');
     var tpl = document.getElementById('notes-' + p.id);
-    if (tpl) sec.querySelector('.notes').appendChild(tpl.content.cloneNode(true));
+    if (tpl) {
+      var frag = tpl.content.cloneNode(true);
+      var vig = frag.querySelector('.vigil');
+      if (vig) sec.querySelector('.notes-r').appendChild(vig);
+      sec.querySelector('.notes').appendChild(frag);
+    }
     return sec;
   }
 
